@@ -1,3 +1,5 @@
+package entities;
+
 public class Customer {
     private String customerId;
     private String name;
@@ -23,7 +25,7 @@ public class Customer {
 
     @Override
     public String toString() {
-        return "Customer{" +
+        return "entities.Customer{" +
                 "customerId='" + customerId + '\'' +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +

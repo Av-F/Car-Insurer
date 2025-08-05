@@ -1,3 +1,5 @@
+package entities;
+
 public class Payment {
     private String paymentId;
     private String customerId;
@@ -29,7 +31,7 @@ public class Payment {
 
     @Override
     public String toString() {
-        return "Payment{" +
+        return "entities.Payment{" +
                 "paymentId='" + paymentId + '\'' +
                 ", customerId='" + customerId + '\'' +
                 ", amount=" + amount +

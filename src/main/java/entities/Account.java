@@ -1,3 +1,5 @@
+package entities;
+
 public class Account {
     private String accountNumber;
     private String accountHolderName;
