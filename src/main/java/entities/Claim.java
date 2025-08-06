@@ -7,14 +7,14 @@ public class Claim {
     private final String claimId;
     private final Policy policy;
     private String description;
-    private LocalDateTime date;
+    private String date;
     private boolean approved;
 
-    public Claim(Policy policy, String description) {
+    public Claim(Policy policy, String description, String date) {
         this.claimId = UUID.randomUUID().toString();
         this.policy = policy;
         this.description = description;
-        this.date = LocalDateTime.now();
+        this.date = date;
         this.approved = false;
     }
 
@@ -30,7 +30,7 @@ public class Claim {
         return description;
     }
 
-    public LocalDateTime getDate() {
+    public String getDate() {
         return date;
     }
 
