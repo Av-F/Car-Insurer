@@ -30,7 +30,6 @@ public class Account {
             throw new IllegalArgumentException("Deposit amount must be positive");
         }
     }
-
     public void withdraw(double amount) {
         if (amount > 0 && amount <= balance) {
             balance -= amount;
