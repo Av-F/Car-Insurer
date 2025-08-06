@@ -1,17 +1,15 @@
 package entities;
-
-import java.time.LocalDate;
 import java.util.UUID;
 
 public class Policy {
     private final String policyId;
-    private final Customer customer;
+    private String  customer;
     private double premium;
-    private LocalDate startDate;
-    private LocalDate endDate;
+    private String startDate;
+    private String endDate;
     private boolean active;
 
-    public Policy(Customer customer, double premium, LocalDate startDate, LocalDate endDate) {
+    public Policy(String customer, double premium, String startDate, String endDate) {
         this.policyId = UUID.randomUUID().toString();
         this.customer = customer;
         this.premium = premium;
@@ -24,7 +22,7 @@ public class Policy {
         return policyId;
     }
 
-    public Customer getCustomer() {
+    public String getCustomer() {
         return customer;
     }
 
@@ -32,11 +30,11 @@ public class Policy {
         return premium;
     }
 
-    public LocalDate getStartDate() {
+    public String getStartDate() {
         return startDate;
     }
 
-    public LocalDate getEndDate() {
+    public String getEndDate() {
         return endDate;
     }
 
@@ -52,7 +50,7 @@ public class Policy {
     public String toString() {
         return "entities.Policy{" +
                 "id='" + policyId + '\'' +
-                ", customer=" + customer.getName() +
+                ", customer=" + customer +
                 ", premium=" + premium +
                 ", startDate=" + startDate +
                 ", endDate=" + endDate +
