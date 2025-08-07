@@ -20,9 +20,8 @@ public class Main {
         PolicyService policyService = new PolicyService();
         ClaimService claimService = new ClaimService();
         PaymentService paymentService = new PaymentService();
-        AccountService accountService = new AccountService();
-        
-        accountService.setService(customerService);
+        AccountService accountService = new AccountService(customerService);
+
         policyService.setService(customerService);
         claimService.setService(customerService);
         paymentService.setService(customerService);

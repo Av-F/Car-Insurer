@@ -11,38 +11,41 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AccountService {
-    CustomerService customerService = new CustomerService();
-    // Constructor to initialize the customer service
-    public void setService(CustomerService customerService) {
+
+    private final CustomerService customerService;
+
+    private static final Logger log = Logger.getLogger(AccountService.class.getName());
+    private final Map<String, Account> accounts = new HashMap<>();
+
+    // Constructor injection — Spring will inject the right instance
+    public AccountService(CustomerService customerService) {
         this.customerService = customerService;
     }
 
-    // add a logger
-    private static final Logger log = Logger.getLogger(AccountService.class.getName());
-    // add a map to store the accounts
-    private final Map<String, Account> accounts = new HashMap<>();
-
     public Account createAccount(String accountName, String accountHolderID, double initialBalance) {
-        // Check if the account number, account name and balance are given
         if (accountName == null) {
             log.severe("Account name cannot be empty");
             throw new IllegalArgumentException("Account name cannot be empty");
         }
         if (accountHolderID == null) {
-            log.severe("Account holder name cannot be empty");
-            throw new IllegalArgumentException("Account holder name cannot be empty");
+            log.severe("Account holder ID cannot be empty");
+            throw new IllegalArgumentException("Account holder ID cannot be empty");
         }
         if (initialBalance < 0) {
             log.severe("Initial balance cannot be negative");
             throw new IllegalArgumentException("Initial balance cannot be negative");
         }
-        // If so, create the account and add it to the map
+
+        Customer c = customerService.getCustomerById(accountHolderID);
+        if (c == null) {
+            log.severe("No customer found with ID: " + accountHolderID);
+            throw new IllegalArgumentException("Customer not found for ID: " + accountHolderID);
+        }
+
         Account account = new Account(accountName, accountHolderID, initialBalance);
         accounts.put(account.getAccountName(), account);
-
-        // Add the account to the Customer entity's list of accounts
-        Customer c = customerService.getCustomerById(accountHolderID);
         c.addAccount(account);
+
         log.info("Account created: " + account.getAccountName() + " for " +
                 account.getAccountHolderID() + " with initial balance: " + initialBalance);
         return account;

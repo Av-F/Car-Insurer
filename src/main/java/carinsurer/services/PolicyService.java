@@ -26,7 +26,6 @@ public class PolicyService {
             logger.warning("Invalid input for creating policy");
             return null;
         }
-        // Rest unchanged, remove Scanner usage
         Policy policy = new Policy(customerID, policyType, premium);
         policies.put(policy.getPolicyId(), policy);
         Customer customer = customerService.getCustomerById(customerID);
