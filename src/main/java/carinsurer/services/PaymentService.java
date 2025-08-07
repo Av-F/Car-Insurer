@@ -1,10 +1,12 @@
-package services;
+package carinsurer.services;
 
-import entities.Payment;
+import carinsurer.entities.Payment;
 import java.util.logging.Logger;
 import java.util.HashMap;
 import java.util.Map;
+import org.springframework.stereotype.Service;
 
+@Service
 public class PaymentService {
     // add a logger
     private static Logger log = Logger.getLogger(PaymentService.class.getName());

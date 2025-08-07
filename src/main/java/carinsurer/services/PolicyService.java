@@ -1,12 +1,15 @@
-package services;
+package carinsurer.services;
 
-import entities.Customer;
-import entities.Policy;
+import carinsurer.entities.Customer;
+import carinsurer.entities.Policy;
 
 import java.util.Scanner;
 import java.util.logging.Logger;
 import java.util.HashMap;
 import java.util.Map;
+import org.springframework.stereotype.Service;
+
+@Service
 public class PolicyService {
     // Add a map for storage and logger for logging
     private final Map<String, Policy> policies = new HashMap<>();
@@ -18,29 +21,14 @@ public class PolicyService {
     }
 
     // Function to create a new policy
-   public Policy createPolicy(String customerID, double premium) {
-        // Write checks to ensure that the policy can be created
-        if(customerID == null) {
-            logger.warning("Cannot create policy: Customer is null");
+    public Policy createPolicy(String customerID, String policyType, double premium) {
+        if(customerID == null || policyType == null || policyType.trim().isEmpty() || premium <= 0) {
+            logger.warning("Invalid input for creating policy");
             return null;
         }
-        if(premium <= 0) {
-            logger.warning("Cannot create policy: Premium must be greater than zero");
-            return null;
-        }
-        // Create a scanner for user input
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter Policy Type: ");
-        String policyType = scanner.nextLine();
-        // Check if the policy type is valid
-        if (policyType == null || policyType.isEmpty()) {
-            logger.warning("Cannot create policy: Policy type is null or empty");
-            return null;
-        }
-        // If the checks are fine, create the policy and put it into the list of policies
+        // Rest unchanged, remove Scanner usage
         Policy policy = new Policy(customerID, policyType, premium);
         policies.put(policy.getPolicyId(), policy);
-        // Add policy to the Customer entity's list of policies
         Customer customer = customerService.getCustomerById(customerID);
         if (customer != null) {
             customer.addPolicy(policy);
@@ -50,6 +38,7 @@ public class PolicyService {
         logger.info("Created policy: " + policy);
         return policy;
     }
+
     // Function to cancel a policy
     public boolean cancelPolicy(String policyId) {
         // Check if the policy exists

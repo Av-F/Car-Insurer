@@ -1,9 +1,12 @@
-package services;
+package carinsurer.services;
 
-import entities.Customer;
+import carinsurer.entities.Customer;
+import org.springframework.stereotype.Service;
+
 import java.util.logging.Logger;
-import java.util.logging.Level;
 import java.util.*;
+
+@Service
 public class CustomerService {
     // create a logger
     private static final Logger log = Logger.getLogger(CustomerService.class.getName());

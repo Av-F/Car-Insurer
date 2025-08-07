@@ -1,11 +1,13 @@
-package services;
+package carinsurer.services;
 
-import entities.Claim;
-import entities.Customer;
-import entities.Policy;
+import carinsurer.entities.Claim;
+import carinsurer.entities.Policy;
 
 import java.util.*;
 import java.util.logging.Logger;
+import org.springframework.stereotype.Service;
+
+@Service
 public class ClaimService {
     // Create logger and initialize claims storage
     private static final Logger log = Logger.getLogger(ClaimService.class.getName());

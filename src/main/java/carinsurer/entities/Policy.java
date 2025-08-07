@@ -1,4 +1,4 @@
-package entities;
+package carinsurer.entities;
 import java.util.UUID;
 
 public class Policy {

@@ -1,12 +1,15 @@
-package services;
+package carinsurer.services;
 
-import entities.Account;
-import entities.Customer;
+import carinsurer.entities.Account;
+import carinsurer.entities.Customer;
 
 import java.util.logging.Logger;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.stereotype.Service;
+
+@Service
 public class AccountService {
     CustomerService customerService = new CustomerService();
     // Constructor to initialize the customer service

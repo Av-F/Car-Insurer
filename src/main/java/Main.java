@@ -1,7 +1,8 @@
-import entities.Claim;
-import entities.Customer;
-import entities.Policy;
-import services.*;
+import carinsurer.services.*;
+import carinsurer.entities.Claim;
+import carinsurer.entities.Customer;
+import carinsurer.entities.Policy;
+
 import java.util.Scanner;
 
 public class Main {
@@ -67,7 +68,9 @@ public class Main {
                     System.out.print("Enter Policy Amount: ");
                     double premium = scanner.nextDouble();
                     scanner.nextLine(); // Consume newline character
-                    policyService.createPolicy(customerId, premium);
+                    System.out.println("Enter Policy Type (e.g., Health, Vehicle, Home): ");
+                    String polytype = scanner.nextLine();
+                    policyService.createPolicy(customerId, polytype, premium);
                     System.out.println("Policy created successfully!");
                     break;
                 case 3:

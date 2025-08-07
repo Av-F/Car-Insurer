@@ -1,4 +1,4 @@
-package entities;
+package carinsurer.entities;
 
 public class Account {
     private String accountName;
