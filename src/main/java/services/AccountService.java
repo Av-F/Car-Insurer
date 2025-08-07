@@ -1,24 +1,31 @@
 package services;
 
 import entities.Account;
+import entities.Customer;
+
 import java.util.logging.Logger;
 import java.util.HashMap;
 import java.util.Map;
 
 public class AccountService {
-    // add a logger
     CustomerService customerService = new CustomerService();
+    // Constructor to initialize the customer service
+    public void setService(CustomerService customerService) {
+        this.customerService = customerService;
+    }
+
+    // add a logger
     private static final Logger log = Logger.getLogger(AccountService.class.getName());
     // add a map to store the accounts
     private final Map<String, Account> accounts = new HashMap<>();
 
-    public Account createAccount(String accountName, String accountHolderName, double initialBalance) {
+    public Account createAccount(String accountName, String accountHolderID, double initialBalance) {
         // Check if the account number, account name and balance are given
         if (accountName == null) {
             log.severe("Account name cannot be empty");
             throw new IllegalArgumentException("Account name cannot be empty");
         }
-        if (accountHolderName == null) {
+        if (accountHolderID == null) {
             log.severe("Account holder name cannot be empty");
             throw new IllegalArgumentException("Account holder name cannot be empty");
         }
@@ -27,13 +34,12 @@ public class AccountService {
             throw new IllegalArgumentException("Initial balance cannot be negative");
         }
         // If so, create the account and add it to the map
-        Account account = new Account(accountName, accountHolderName, initialBalance);
+        Account account = new Account(accountName, accountHolderID, initialBalance);
         accounts.put(account.getAccountName(), account);
 
         // Add the account to the Customer entity's list of accounts
-        customerService.getCustomerIDByName(accountHolderName);
-        customerService.getCustomerById(accountHolderName).addAccount(account);
-
+        Customer c = customerService.getCustomerById(accountHolderID);
+        c.addAccount(account);
         log.info("Account created: " + account.getAccountName() + " for " +
                 account.getAccountHolderID() + " with initial balance: " + initialBalance);
         return account;
@@ -91,7 +97,7 @@ public class AccountService {
     public void withdraw(String accountName, double amount) {
         // Get the account from the map
         Account account = getAccount(accountName);
-        // Check if the balance has sufficent funds for a withdrawal
+        // Check if the balance has sufficient funds for a withdrawal
         if (account.getBalance() < amount) {
             log.severe("Insufficient balance for withdrawal from account " + accountName +
                     ". Current balance: " + account.getBalance() + ", attempted withdrawal: " + amount);

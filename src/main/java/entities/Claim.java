@@ -5,7 +5,6 @@ import java.util.UUID;
 
 public class Claim {
     private final String claimId;
-
     private String customerId;
     private final Policy policy;
     private String description;

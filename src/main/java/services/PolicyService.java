@@ -1,5 +1,6 @@
 package services;
 
+import entities.Customer;
 import entities.Policy;
 
 import java.util.Scanner;
@@ -12,10 +13,14 @@ public class PolicyService {
     private static final Logger logger = Logger.getLogger(PolicyService.class.getName());
 
     CustomerService customerService = new CustomerService();
+    public void setService(CustomerService customerService) {
+        this.customerService = customerService;
+    }
+
     // Function to create a new policy
-   public Policy createPolicy(String customer, double premium) {
+   public Policy createPolicy(String customerID, double premium) {
         // Write checks to ensure that the policy can be created
-        if(customer == null) {
+        if(customerID == null) {
             logger.warning("Cannot create policy: Customer is null");
             return null;
         }
@@ -33,11 +38,15 @@ public class PolicyService {
             return null;
         }
         // If the checks are fine, create the policy and put it into the list of policies
-        Policy policy = new Policy(customer, policyType, premium);
+        Policy policy = new Policy(customerID, policyType, premium);
         policies.put(policy.getPolicyId(), policy);
         // Add policy to the Customer entity's list of policies
-        customerService.getCustomerIDByName(customer);
-        customerService.getCustomerById(customer).addPolicy(policy);
+        Customer customer = customerService.getCustomerById(customerID);
+        if (customer != null) {
+            customer.addPolicy(policy);
+        } else {
+            logger.warning("Cannot add policy to customer: Customer with ID " + customerID + " does not exist");
+        }
         logger.info("Created policy: " + policy);
         return policy;
     }
@@ -65,13 +74,13 @@ public class PolicyService {
         logger.info("Retrieved policy: " + policy);
         return policy;
     }
-    public Policy getPolicyByCustomer(String customer) {
+    public Policy getPolicyByCustomer(Customer customer) {
         if (customer == null) {
             logger.warning("Cannot retrieve policy: Customer is null");
             return null;
         }
         for (Policy policy : policies.values()) {
-            if (policy.getCustomer().equals(customer)) {
+            if (policy.getCustomer().equals(customer.getCustomerId())) {
                 logger.info("Retrieved policy for customer: " + customer);
                 return policy;
             }
@@ -90,20 +99,5 @@ public class PolicyService {
         }
         logger.info("Retrieved all active policies");
         return activePolicies;
-    }
-    // function get policies per customer
-   public Map<String, Policy> getPoliciesByCustomer(String customer) {
-        if (customer == null) {
-            logger.warning("Cannot retrieve policies: Customer is null");
-            return new HashMap<>();
-        }
-        Map<String, Policy> customerPolicies = new HashMap<>();
-        for (Policy policy : policies.values()) {
-            if (policy.getCustomer().equals(customer)) {
-                customerPolicies.put(policy.getPolicyId(), policy);
-            }
-        }
-        logger.info("Retrieved policies for customer: " + customer);
-        return customerPolicies;
     }
 }

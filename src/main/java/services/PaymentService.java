@@ -7,9 +7,15 @@ import java.util.Map;
 
 public class PaymentService {
     // add a logger
-    private static final Logger log = Logger.getLogger(PaymentService.class.getName());
+    private static Logger log = Logger.getLogger(PaymentService.class.getName());
     // add a map to store the payments
-    private final Map<String, Payment> payments = new HashMap<>();
+    private Map<String, Payment> payments = new HashMap<>();
+
+    // add a customer service to get the customer details
+    private CustomerService customerService = new CustomerService();
+    public void setService(CustomerService customerService) {
+        this.customerService = customerService;
+    }
 
     // Function to create payments with checks
     public Payment createPayment(String paymentId, String customerId, double amount, String paymentDate) {

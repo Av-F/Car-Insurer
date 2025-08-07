@@ -11,11 +11,15 @@ public class ClaimService {
     private static final Logger log = Logger.getLogger(ClaimService.class.getName());
     private final Map<String, Claim> claims = new HashMap<>();
     CustomerService customerService = new CustomerService();
+    public void setService(CustomerService customerService) {
+        this.customerService = customerService;
+    }
     // create a claim
     public Claim createClaim(Policy policy, String customerId, String description) {
         Claim claim = new Claim(policy,customerId, description);
         claims.put(claim.getClaimId(), claim);
         customerService.getCustomerById(policy.getCustomer()).addClaim(claim);
+        System.out.println("Claim created successfully with the id of " + claim.getClaimId());
         log.info("Created claim: " + claim);
         return claim;
     }

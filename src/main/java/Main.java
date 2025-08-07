@@ -6,7 +6,7 @@ import java.util.Scanner;
 
 public class Main {
 
-    public static void Main(String[] args) {
+    public static void main(String[] args) {
         // Create scanner for user input
         Scanner scanner = new Scanner(System.in);
         // give an option for isRunning
@@ -20,6 +20,14 @@ public class Main {
         ClaimService claimService = new ClaimService();
         PaymentService paymentService = new PaymentService();
         AccountService accountService = new AccountService();
+        
+        accountService.setService(customerService);
+        policyService.setService(customerService);
+        claimService.setService(customerService);
+        paymentService.setService(customerService);
+
+        
+        // Loop through the menu options
         do {
             System.out.println(
                 "1. Create Customer\n" +
@@ -36,7 +44,6 @@ public class Main {
             switch (option) {
                 case 1:
                     // Call method to create customer
-
                     System.out.println("Creating Customer...");
                     System.out.print("Enter Customer Name: ");
                     String customerName = scanner.nextLine();
@@ -50,14 +57,13 @@ public class Main {
                     double accountBalance = scanner.nextDouble();
                     scanner.nextLine(); // Consume newline character
                     String customerID = customerService.getCustomerIDByName(customerName);
-                    accountName = accountName + " - " + customerID;
                     accountService.createAccount(accountName, customerID, accountBalance);
                     System.out.println("Account created successfully for customer: " + customerName);
                     break;
                 case 2:
                     // Call method to create policy
                     System.out.print("Enter Customer ID: ");
-                    String customerId = customerService.getCustomerIDByName(scanner.nextLine());
+                    String customerId = scanner.nextLine();
                     System.out.print("Enter Policy Amount: ");
                     double premium = scanner.nextDouble();
                     scanner.nextLine(); // Consume newline character
@@ -67,20 +73,24 @@ public class Main {
                 case 3:
                     // Call method to create claim
                     System.out.println("Creating Claim...");
-                    System.out.print("Enter customer name: ");
-                    String customerForClaim = scanner.nextLine();
-                    Policy policyForClaim = policyService.getPolicyByCustomer(customerForClaim);
-                    String customerIdForClaim = customerService.getCustomerIDByName(customerForClaim);
+                    System.out.print("Enter customer ID: ");
+                    String IDForClaim = scanner.nextLine();
                     System.out.println("Enter claim description: ");
                     String claimDescription = scanner.nextLine();
-                    if (policyForClaim != null) {
-                        claimService.createClaim(policyForClaim,customerIdForClaim, claimDescription);
+                    Customer c = customerService.getCustomerById(IDForClaim);
+                    c.getPolicies().forEach(p -> System.out.println("Policy ID: " + p.getPolicyId() + ", Type: " + p.getPolicyType()));
+                    System.out.println("Enter policy ID from the above list: ");
+                    String policyIDForClaim = scanner.nextLine();
+                    Policy policyForClaim = policyService.getPolicyById(policyIDForClaim);
+
+                    if (policyService.getPolicyById(policyIDForClaim) != null) {
+                        claimService.createClaim(policyService.getPolicyById(policyIDForClaim), IDForClaim, claimDescription);
                         System.out.println("Claim created successfully for policy: " + policyForClaim.getPolicyId());
                     } else {
-                        System.out.println("No policy found for customer: " + customerForClaim);
+                        System.out.println("No policy found for customer: " + IDForClaim);
                     }
-                    claimService.createClaim(policyForClaim, customerIdForClaim, claimDescription);
-                    System.out.println("Claim created successfully!");
+                    claimService.createClaim(policyForClaim, IDForClaim, claimDescription);
+                    System.out.println("Claim created successfully!\n");
                     break;
                 case 4:
                     // Call method to view customer
@@ -98,12 +108,13 @@ public class Main {
                     // Call method to view policy
                     System.out.println("Viewing Policy...");
                     System.out.println("Enter customer id:");
-                    String customerIdForPolicy = scanner.nextLine();
-                    Policy policy = policyService.getPolicyByCustomer(customerIdForPolicy);
+                    String cIdForPolicy = scanner.nextLine();
+                    Customer custForPolicy = customerService.getCustomerById(cIdForPolicy);
+                    Policy policy = policyService.getPolicyByCustomer(custForPolicy);
                     if (policy != null) {
                         System.out.println("Policy Details: " + policy);
                     } else {
-                        System.out.println("No policy found for customer ID: " + customerIdForPolicy);
+                        System.out.println("No policy found for customer ID: " + cIdForPolicy);
                     }
                     break;
                 case 6:
@@ -113,14 +124,16 @@ public class Main {
                     String claimIdToView = scanner.nextLine();
                     Claim claim = claimService.getClaim(claimIdToView);
                     System.out.println("Claim Details: " + claim);
-                    System.out.println("Would you like to approve the claim? Y or N");
-                    String approve = scanner.nextLine();
-                    if (approve.equalsIgnoreCase("Y")) {
+                    if(!claim.isApproved()) {
+                        System.out.println("Would you like to approve the claim? Y or N");
+                        String approve = scanner.nextLine();
+                        if (approve.equalsIgnoreCase("Y")) {
 
-                        claimService.approveClaim(claimIdToView);
-                        System.out.println("Claim approved successfully!");
-                    } else {
-                        System.out.println("Claim not approved.");
+                            claimService.approveClaim(claimIdToView);
+                            System.out.println("Claim approved successfully!");
+                        } else {
+                            System.out.println("Claim not approved.");
+                        }
                     }
                     break;
                 case 7:
