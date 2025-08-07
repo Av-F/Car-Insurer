@@ -24,26 +24,9 @@ public class Customer {
         return customerId;
     }
 
-
     public String getName() {
 
         return name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public List<Account> getAccounts() {
-        return accounts;
-    }
-    public void addAccount(Account account) {
-        if (account != null) {
-            accounts.add(account);
-        }
-    }
-    public void removeAccount(Account account) {
-        accounts.remove(account);
     }
 
     public List<Claim> getClaims() {
@@ -54,6 +37,15 @@ public class Customer {
             claims.add(claim);
         }
     }
+    public void approveClaim(String claimId) {
+        for (Claim claim : claims) {
+            if (claim.getClaimId().equals(claimId)) {
+                claim.approve();
+                return;
+            }
+        }
+        throw new IllegalArgumentException("Claim with ID " + claimId + " not found.");
+    }
     public List<Policy> getPolicies() {
         return policies;
     }
@@ -62,10 +54,11 @@ public class Customer {
             policies.add(policy);
         }
     }
-    public void removePolicy(Policy policy) {
-        policies.remove(policy);
+    public void addAccount(Account account) {
+        if (account != null) {
+            accounts.add(account);
+        }
     }
-
     @Override
     public String toString() {
         return "entities.Customer{" +

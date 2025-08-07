@@ -12,8 +12,8 @@ public class ClaimService {
     private final Map<String, Claim> claims = new HashMap<>();
     CustomerService customerService = new CustomerService();
     // create a claim
-    public Claim createClaim(Policy policy, String description) {
-        Claim claim = new Claim(policy, description);
+    public Claim createClaim(Policy policy, String customerId, String description) {
+        Claim claim = new Claim(policy,customerId, description);
         claims.put(claim.getClaimId(), claim);
         customerService.getCustomerById(policy.getCustomer()).addClaim(claim);
         log.info("Created claim: " + claim);
@@ -30,35 +30,16 @@ public class ClaimService {
         return claim;
     }
 
-    // Function to return all claims
-    public List<Claim> getAllClaims() {
-        log.info("Retrieved all claims, count: " + claims.size());
-        return new ArrayList<>(claims.values());
-    }
     // Function to approve/deny claims
     public boolean approveClaim(String claimId) {
         Claim claim = claims.get(claimId);
-        if (claim == null) {
-            log.warning("Claim not found for approval: " + claimId);
+        if (claim == null || claim.isApproved()) {
+            log.warning("Claim not found for approval or is already true: " + claimId);
             return false;
         }
         claim.approve();
+        customerService.getCustomerById(claim.getCustomerId()).approveClaim(claimId);
         log.info("Approved claim: " + claim);
         return true;
-    }
-    // Function to delete a claim
-    public boolean deleteClaim(String claimId) {
-        Claim claim = claims.remove(claimId);
-        if (claim == null) {
-            log.warning("Claim not found for deletion: " + claimId);
-            return false;
-        }
-        log.info("Deleted claim: " + claim);
-        return true;
-    }
-    // Function to clear all claims
-    public void clearClaims() {
-        claims.clear();
-        log.info("All claims cleared.");
     }
 }

@@ -54,27 +54,41 @@ public class CustomerService {
         log.warning("No customer found with name: " + name);
         return null; // Returns null if no customer is found
     }
-    // Function to return all customers
-    public List<Customer> getAllCustomers() {
-        log.info("List of all customers (total: " + customers.size() + ")");
-        return new ArrayList<>(customers.values());
-    }
 
-    // Function to delete a customer
-    public boolean deleteCustomer(String id) {
-        if (id == null || id.trim().isEmpty()) {
-            log.warning("Customer ID cannot be empty when deleting");
+    // Function to get customer claims
+    public List<String> getCustomerClaims(String customerId) {
+        if (customerId == null || customerId.trim().isEmpty()) {
+            log.warning("Customer ID cannot be empty when retrieving claims");
             throw new IllegalArgumentException("Customer ID cannot be empty");
         }
-        Customer removed = customers.remove(id);
-        if (removed != null) {
-            log.info("Deleted customer: ID=" + removed.getCustomerId() + ", Name='" + removed.getName() + "'");
-            return true;
-        } else {
-            log.warning("Attempted to delete non-existent customer: ID=" + id);
-            return false;
+        Customer customer = customers.get(customerId);
+        if (customer == null) {
+            log.warning("No customer found with ID: " + customerId);
+            return Collections.emptyList(); // Return empty list if no customer found
         }
+        List<String> claimIds = new ArrayList<>();
+        for (var claim : customer.getClaims()) {
+            claimIds.add(claim.getClaimId());
+        }
+        log.info("Retrieved claims for customer ID=" + customerId + ", Claims count: " + claimIds.size());
+        return claimIds;
     }
-
-
+    // Function to get customer policies
+    public List<String> getCustomerPolicies(String customerId) {
+        if (customerId == null || customerId.trim().isEmpty()) {
+            log.warning("Customer ID cannot be empty when retrieving policies");
+            throw new IllegalArgumentException("Customer ID cannot be empty");
+        }
+        Customer customer = customers.get(customerId);
+        if (customer == null) {
+            log.warning("No customer found with ID: " + customerId);
+            return Collections.emptyList(); // Return empty list if no customer found
+        }
+        List<String> policyIds = new ArrayList<>();
+        for (var policy : customer.getPolicies()) {
+            policyIds.add(policy.getPolicyId());
+        }
+        log.info("Retrieved policies for customer ID=" + customerId + ", Policies count: " + policyIds.size());
+        return policyIds;
+    }
 }

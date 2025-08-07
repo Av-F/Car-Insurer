@@ -70,16 +70,16 @@ public class Main {
                     System.out.print("Enter customer name: ");
                     String customerForClaim = scanner.nextLine();
                     Policy policyForClaim = policyService.getPolicyByCustomer(customerForClaim);
-
+                    String customerIdForClaim = customerService.getCustomerIDByName(customerForClaim);
                     System.out.println("Enter claim description: ");
                     String claimDescription = scanner.nextLine();
                     if (policyForClaim != null) {
-                        claimService.createClaim(policyForClaim, claimDescription);
+                        claimService.createClaim(policyForClaim,customerIdForClaim, claimDescription);
                         System.out.println("Claim created successfully for policy: " + policyForClaim.getPolicyId());
                     } else {
                         System.out.println("No policy found for customer: " + customerForClaim);
                     }
-                    claimService.createClaim(policyForClaim, claimDescription);
+                    claimService.createClaim(policyForClaim, customerIdForClaim, claimDescription);
                     System.out.println("Claim created successfully!");
                     break;
                 case 4:
