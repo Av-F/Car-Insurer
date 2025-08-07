@@ -3,18 +3,18 @@ import java.util.UUID;
 
 public class Policy {
     private final String policyId;
-    private String  customer;
+    private String  customerId;
+
+    private String policyType;
     private double premium;
-    private String startDate;
-    private String endDate;
+
     private boolean active;
 
-    public Policy(String customer, double premium, String startDate, String endDate) {
+    public Policy(String customerId, String policyType, double premium) {
         this.policyId = UUID.randomUUID().toString();
-        this.customer = customer;
+        this.policyType = policyType;
+        this.customerId = customerId;
         this.premium = premium;
-        this.startDate = startDate;
-        this.endDate = endDate;
         this.active = true;
     }
 
@@ -23,19 +23,15 @@ public class Policy {
     }
 
     public String getCustomer() {
-        return customer;
+        return customerId;
     }
 
     public double getPremium() {
         return premium;
     }
 
-    public String getStartDate() {
-        return startDate;
-    }
-
-    public String getEndDate() {
-        return endDate;
+    public String getPolicyType() {
+        return policyType;
     }
 
     public boolean isActive() {
@@ -50,10 +46,9 @@ public class Policy {
     public String toString() {
         return "entities.Policy{" +
                 "id='" + policyId + '\'' +
-                ", customer=" + customer +
+                ", customerId=" + customerId +
                 ", premium=" + premium +
-                ", startDate=" + startDate +
-                ", endDate=" + endDate +
+                ", policy type=" + policyType +
                 ", active=" + active +
                 '}';
     }

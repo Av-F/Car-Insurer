@@ -7,15 +7,16 @@ import java.util.Map;
 
 public class AccountService {
     // add a logger
+    CustomerService customerService = new CustomerService();
     private static final Logger log = Logger.getLogger(AccountService.class.getName());
     // add a map to store the accounts
     private final Map<String, Account> accounts = new HashMap<>();
 
-    public Account createAccount(String accountNumber, String accountHolderName, double initialBalance) {
+    public Account createAccount(String accountName, String accountHolderName, double initialBalance) {
         // Check if the account number, account name and balance are given
-        if (accountNumber == null) {
-            log.severe("Account number cannot be empty");
-            throw new IllegalArgumentException("Account number cannot be empty");
+        if (accountName == null) {
+            log.severe("Account name cannot be empty");
+            throw new IllegalArgumentException("Account name cannot be empty");
         }
         if (accountHolderName == null) {
             log.severe("Account holder name cannot be empty");
@@ -26,55 +27,60 @@ public class AccountService {
             throw new IllegalArgumentException("Initial balance cannot be negative");
         }
         // If so, create the account and add it to the map
-        Account account = new Account(accountNumber, accountHolderName, initialBalance);
-        accounts.put(account.getAccountNumber(), account);
-        log.info("Account created: " + account.getAccountNumber() + " for " +
-                account.getAccountHolderName() + " with initial balance: " + initialBalance);
+        Account account = new Account(accountName, accountHolderName, initialBalance);
+        accounts.put(account.getAccountName(), account);
+
+        // Add the account to the Customer entity's list of accounts
+        customerService.getCustomerIDByName(accountHolderName);
+        customerService.getCustomerById(accountHolderName).addAccount(account);
+
+        log.info("Account created: " + account.getAccountName() + " for " +
+                account.getAccountHolderID() + " with initial balance: " + initialBalance);
         return account;
     }
 
-    public Account getAccount(String accountNumber) {
+    public Account getAccount(String accountName) {
         // Check if the account number is given
-        if (accountNumber == null) {
+        if (accountName == null) {
             log.severe("Account number cannot be empty");
             throw new IllegalArgumentException("Account number cannot be empty");
         }
         // If so, return the account from the map
-        Account account = accounts.get(accountNumber);
+        Account account = accounts.get(accountName);
         if (account == null) {
-            log.severe("Account not found: " + accountNumber);
+            log.severe("Account not found: " + accountName);
             throw new IllegalArgumentException("Account not found");
         }
         return account;
     }
-    public String getAccountHolderName(String accountNumber) {
-        if(accountNumber == null) {
+    public String getAccountHolderID(String accountName) {
+        if(accountName == null) {
             log.severe("Account number cannot be empty");
             throw new IllegalArgumentException("Account number cannot be empty");
         }
         // Get the account from the map
-        Account account = getAccount(accountNumber);
+        Account account = getAccount(accountName);
         // Return the account holder name
-        return account.getAccountHolderName();
+        return account.getAccountHolderID();
     }
 
-    public double getBalance(String accountNumber) {
-        if(accountNumber == null) {
+    public double getBalance(String accountName) {
+        if(accountName == null) {
             log.severe("Account number cannot be empty");
             throw new IllegalArgumentException("Account number cannot be empty");
         }
         // Get the account from the map
-        Account account = getAccount(accountNumber);
+        Account account = getAccount(accountName);
         // Return the balance of the account
         return account.getBalance();
     }
-    public void deposit(String accountNumber, double amount) {
+    public void deposit(String accountName, double amount) {
         if(amount > 0) {
             // Get the account from the map
-            Account account = getAccount(accountNumber);
+            Account account = getAccount(accountName);
             // Deposit the amount to the account
             account.deposit(amount);
-            log.info("Deposited " + amount + " to account " + accountNumber +
+            log.info("Deposited " + amount + " to account " + accountName +
                     ". New balance: " + account.getBalance());
         } else {
             log.severe("Deposit amount must be positive");
@@ -82,18 +88,18 @@ public class AccountService {
         }
     }
 
-    public void withdraw(String accountNumber, double amount) {
+    public void withdraw(String accountName, double amount) {
         // Get the account from the map
-        Account account = getAccount(accountNumber);
+        Account account = getAccount(accountName);
         // Check if the balance has sufficent funds for a withdrawal
         if (account.getBalance() < amount) {
-            log.severe("Insufficient balance for withdrawal from account " + accountNumber +
+            log.severe("Insufficient balance for withdrawal from account " + accountName +
                     ". Current balance: " + account.getBalance() + ", attempted withdrawal: " + amount);
             throw new IllegalArgumentException("Insufficient balance");
         } else {
             // Withdraw the amount from the account
             account.withdraw(amount);
-            log.info("Withdrew " + amount + " from account " + accountNumber +
+            log.info("Withdrew " + amount + " from account " + accountName +
                     ". New balance: " + account.getBalance());
         }
     }

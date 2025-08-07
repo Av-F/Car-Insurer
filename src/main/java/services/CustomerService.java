@@ -24,14 +24,14 @@ public class CustomerService {
             throw new IllegalArgumentException("Customer email cannot be empty");
         }
         // If passed, create the customer and put into the list of customers
-        // Create a unique ID for the customer too
-        String id = UUID.randomUUID().toString();
-        Customer customer = new Customer(id, name, email);
+        Customer customer = new Customer(name, email);
         customers.put(customer.getCustomerId(), customer);
         // Log the creation of the customer
         log.info(String.format("Created customer: ID=%s, Name='%s', Email='%s'",
                 customer.getCustomerId(), name, email));
         // Return the created customer
+        System.out.println("Customer created successfully: " + customer.getName() +
+                " (ID: " + customer.getCustomerId() + ")");
         return customer;
     }
     // Function to get a customer by their ID
@@ -40,6 +40,19 @@ public class CustomerService {
             throw new IllegalArgumentException("Customer ID cannot be empty");
         }
         return customers.get(id); // Returns customer if customer ID is found
+    }
+    // Function to get a customer by their name
+    public String getCustomerIDByName(String name) {
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Customer name cannot be empty");
+        }
+        for (Customer customer : customers.values()) {
+            if (customer.getName().equalsIgnoreCase(name)) {
+                return customer.getCustomerId(); // Returns the ID
+            }
+        }
+        log.warning("No customer found with name: " + name);
+        return null; // Returns null if no customer is found
     }
     // Function to return all customers
     public List<Customer> getAllCustomers() {
@@ -62,4 +75,6 @@ public class CustomerService {
             return false;
         }
     }
+
+
 }

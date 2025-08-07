@@ -13,8 +13,8 @@ public class Customer {
 
     private List<Policy> policies = new ArrayList<>();
 
-    public Customer(String customerId, String name, String email) {
-        this.customerId = customerId;
+    public Customer(String name, String email) {
+        this.customerId = java.util.UUID.randomUUID().toString();
         this.name = name;
         this.email = email;
     }
@@ -23,6 +23,7 @@ public class Customer {
 
         return customerId;
     }
+
 
     public String getName() {
 
@@ -52,9 +53,6 @@ public class Customer {
         if (claim != null) {
             claims.add(claim);
         }
-    }
-    public void removeClaim(Claim claim) {
-        claims.remove(claim);
     }
     public List<Policy> getPolicies() {
         return policies;

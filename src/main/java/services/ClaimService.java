@@ -10,10 +10,12 @@ public class ClaimService {
     // Create logger and initialize claims storage
     private static final Logger log = Logger.getLogger(ClaimService.class.getName());
     private final Map<String, Claim> claims = new HashMap<>();
+    CustomerService customerService = new CustomerService();
     // create a claim
-    public Claim createClaim(Policy policy, String description, String date) {
-        Claim claim = new Claim(policy, description, date);
+    public Claim createClaim(Policy policy, String description) {
+        Claim claim = new Claim(policy, description);
         claims.put(claim.getClaimId(), claim);
+        customerService.getCustomerById(policy.getCustomer()).addClaim(claim);
         log.info("Created claim: " + claim);
         return claim;
     }
@@ -27,17 +29,7 @@ public class ClaimService {
         log.info("Retrieved claim: " + claim);
         return claim;
     }
-    // Function to return all claims for a specific customer
-    public List<Claim> getClaimsByCustomer(Customer customer) {
-        List<Claim> customerClaims = new ArrayList<>();
-        for (Claim claim : claims.values()) {
-            if (claim.getPolicy().getCustomer().equals(customer)) {
-                customerClaims.add(claim);
-            }
-        }
-        log.info("Retrieved " + customerClaims.size() + " claims for customer: " + customer.getName());
-        return customerClaims;
-    }
+
     // Function to return all claims
     public List<Claim> getAllClaims() {
         log.info("Retrieved all claims, count: " + claims.size());

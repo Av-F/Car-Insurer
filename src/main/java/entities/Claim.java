@@ -7,14 +7,13 @@ public class Claim {
     private final String claimId;
     private final Policy policy;
     private String description;
-    private String date;
+
     private boolean approved;
 
-    public Claim(Policy policy, String description, String date) {
+    public Claim(Policy policy, String description) {
         this.claimId = UUID.randomUUID().toString();
         this.policy = policy;
         this.description = description;
-        this.date = date;
         this.approved = false;
     }
 
@@ -22,18 +21,13 @@ public class Claim {
         return claimId;
     }
 
-    public Policy getPolicy() {
-        return policy;
-    }
-
     public String getDescription() {
         return description;
     }
 
-    public String getDate() {
-        return date;
+    public void setDescription(String description) {
+        this.description = description;
     }
-
     public boolean isApproved() {
         return approved;
     }
@@ -46,9 +40,8 @@ public class Claim {
     public String toString() {
         return "entities.Claim{" +
                 "id='" + claimId + '\'' +
-                ", policyId='" + policy.getPolicyId() + '\'' +
+                ", policyId='" +  + '\'' +
                 ", description='" + description + '\'' +
-                ", date=" + date +
                 ", approved=" + approved +
                 '}';
     }
